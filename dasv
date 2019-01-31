@@ -1,0 +1,63 @@
+#!/bin/bash
+
+speaker () {
+	pidof cava | xargs kill -9 > /dev/null 2> /dev/null
+	cava -p /home/user/.config/dasv/s.conf | sed 's|[;,]||g' > /dev/$(ls -l /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0 | sed 's/.*\(.......\)/\1/') &
+}
+
+headphones () {
+	pidof cava | xargs kill -9 > /dev/null 2> /dev/null
+	cava -p /home/user/.config/dasv/h.conf | sed 's|[;,]||g' > /dev/$(ls -l /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0 | sed 's/.*\(.......\)/\1/') &
+}
+
+# check if speaker was passed
+if [ "$1" == "" ]; then
+	# if no argument was passed, read config file for last usage
+	if [ "$(cat /home/user/.config/dasv/config)" == "-s" ]; then
+		speaker
+	elif [ "$(cat /home/user/.config/dasv/config)" == "-h" ]; then
+		headphones
+	else
+	# if neither, default to speaker
+		speaker
+	fi
+elif [ "$1" == "-s" ]; then
+	speaker
+elif [ "$1" == "-h" ]; then
+	headphones
+# included incase the arduino is acting weird
+elif [ "$1" == "restart" ]; then
+	# kills the current process
+	pidof cava | xargs kill -9 > /dev/null 2> /dev/null
+	# starts it again from config file
+	if [ "$(cat /home/user/.config/dasv/config)" == "-s" ]; then
+		speaker
+	elif [ "$(cat /home/user/.config/dasv/config)" == "-h" ]; then
+		headphones
+	else
+	# if neither, default to speaker
+		speaker
+	fi
+elif [ "$1" == "on" ]; then
+	# kills the current process
+	pidof cava | xargs kill -9 > /dev/null 2> /dev/null
+	# if no argument was passed, read config file for last usage
+	if [ "$(cat /home/user/.config/dasv/config)" == "-s" ]; then
+		speaker
+	elif [ "$(cat /home/user/.config/dasv/config)" == "-h" ]; then
+		headphones
+	else
+	# if neither, default to speaker
+		speaker
+	fi
+elif [ "$1" == "off" ]; then
+	# kills the current process
+	pidof cava | xargs kill -9 > /dev/null 2> /dev/null
+else
+	echo "Usage:"
+	echo " dasv [options] on/off/restart"
+	echo ""
+	echo "Options:"
+	echo " -s	Reads output from speakers"
+	echo " -h	Reads output from headphones"
+fi

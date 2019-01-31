@@ -1,0 +1,11 @@
+[Unit]
+Description="Dope Ass Shitty Visualizer"
+
+[Service]
+Type=simple
+EnvironmentFile=/home/user/.config/dasv/config
+ExecStart=/bin/bash /usr/bin/dasv $ARG1
+
+[Install]
+WantedBy=multi-user.target
+

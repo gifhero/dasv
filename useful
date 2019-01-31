@@ -1,0 +1,11 @@
+# kills cava and restarts it
+pidof cava | xargs kill -9 ; cava
+
+#starts cava
+cava -p /home/user/.config/cava/s.conf | sed 's|[;,]||g' > /dev/ttyUSB0
+
+# find USB device attached
+ls -l /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0 | sed 's/.*\(.......\)/\1/'
+
+cava -p /home/user/.config/dasv/s.conf | sed 's|[;,]||g' > /dev/$(ls -l /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0 | sed 's/.*\(.......\)/\1/')
+cava -p /home/user/.config/dasv/h.conf | sed 's|[;,]||g' > /dev/$(ls -l /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0 | sed 's/.*\(.......\)/\1/')
